@@ -15,6 +15,14 @@ class SamlUserProvider implements UserProviderInterface
     protected $username = '';
 
     /**
+     * User profile if the user already exists
+     *
+     * @access private
+     * @var array
+     */
+    private $userProfile = array();
+
+    /**
      * Email
      *
      * @access protected
@@ -36,12 +44,13 @@ class SamlUserProvider implements UserProviderInterface
      * @access public
      * @param  string $username
      */
-    public function __construct($username, $email, $name, $role)
+    public function __construct($username, $email, $name, array $userProfile = array())
     {
         $this->username = $username;
         $this->email = $email;
         $this->name = $name;
-        $this->role = $role;
+	//$this->role = $role;
+	$this->userProfile = $userProfile;
     }
 
     /**
@@ -96,8 +105,12 @@ class SamlUserProvider implements UserProviderInterface
      */
     public function getRole()
     {
-        //return Role::APP_USER;
-        return $this->role;
+	//return Role::APP_USER;
+	if(isset($this->userProfile['role'])){
+            return $this->userProfile['role'];
+        }
+        return Role::APP_USER;
+        //return $this->role;
     }
 
     /**
@@ -154,7 +167,9 @@ class SamlUserProvider implements UserProviderInterface
     {
         return array(
             'is_ldap_user' => 1,
-            'disable_login_form' => 1,
+	    'disable_login_form' => 1,
+	    'notifications_enabled' => 1,
+	    'notifications_filter' => 1,
         );
     }
 }

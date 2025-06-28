@@ -53,7 +53,7 @@ class SamlAuth extends Base implements AuthenticationProviderInterface, PreAuthe
       try {
           if (isset($_POST['SAMLResponse'])) {
               $samlSettings = new \OneLogin_Saml2_Settings($settings->getSettings(), true);
-              $samlResponse = new \OneLogin_Saml2_Response($samlSettings, $_POST['SAMLResponse']);
+	      $samlResponse = new \OneLogin_Saml2_Response($samlSettings, $_POST['SAMLResponse']);
               if ($samlResponse->isValid()) {
 
                   // echo 'You are: ' . $samlResponse->getNameId() . '<br>';
@@ -100,7 +100,9 @@ class SamlAuth extends Base implements AuthenticationProviderInterface, PreAuthe
                   if (!empty($username) && !empty($email)) {
 
                       //Create user by having email as username
-                      $this->userInfo = new SamlUserProvider($username, $email, $fullname);
+//			  $this->userInfo = new SamlUserProvider($username, $email, $fullname);
+			   $userProfile = $this->userCacheDecorator->getByUsername($username);
+                      $this->userInfo = new SamlUserProvider($username, $email, $fullname, $userProfile ?: array());
                       return true;
 
                   } else {
